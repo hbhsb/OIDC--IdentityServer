@@ -89,7 +89,7 @@ namespace QuickstartIdentityServer
                         new Secret("BPptSgcAhYxUYIIPSbr5SDHG4-Gq8TrP2qsVc44j4YmNqmm-nuc2Ld3heyJQoMmB".Sha256())
                     },
 
-                    RedirectUris = { "http://localhost:3000/callback" },
+                    RedirectUris = { "http://192.168.0.158:8196/callback" },
                     PostLogoutRedirectUris = { "http://localhost:3000/" },
 
                     AllowedScopes =
@@ -137,7 +137,7 @@ namespace QuickstartIdentityServer
                     SubjectId = "3",
                     Username = "bob",
                     Password = "password",
-                    
+
                     Claims = new List<Claim>
                     {
                         new Claim("name", "Bob"),
