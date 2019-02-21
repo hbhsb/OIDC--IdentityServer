@@ -18,6 +18,9 @@ namespace QuickstartIdentityServer
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
+                new IdentityResources.Email(),
+                new IdentityResource("roles","角色", new List<string>{"role"}),
+                new IdentityResource("nationality","国籍", new List<string>(){"nationality"})
             };
         }
 
@@ -25,7 +28,14 @@ namespace QuickstartIdentityServer
         {
             return new List<ApiResource>
             {
-                new ApiResource("https://quickstarts/api", "My API")
+                new ApiResource("https://quickstarts/api", "My API",
+                    new List<string>()
+                    {
+                        "role",
+                        "given_name",
+                        "gender",
+                        "nationality"
+                    })
             };
         }
 
@@ -89,13 +99,32 @@ namespace QuickstartIdentityServer
                         new Secret("BPptSgcAhYxUYIIPSbr5SDHG4-Gq8TrP2qsVc44j4YmNqmm-nuc2Ld3heyJQoMmB".Sha256())
                     },
 
-                    RedirectUris = { "http://192.168.0.158:8196/callback" },
+                    RedirectUris = { "http://localhost:3000/callback" },
                     PostLogoutRedirectUris = { "http://localhost:3000/" },
 
                     AllowedScopes =
                     {
                         "https://quickstarts/api",
                         IdentityServerConstants.StandardScopes.OpenId,
+                    }
+                },
+                new Client
+                {
+                    ClientId = "js",
+                    ClientName = "JavaScript Client",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    RequireClientSecret = false,
+
+                    RedirectUris =           { "http://localhost:3000/callback.html" },
+                    PostLogoutRedirectUris = { "http://localhost:3000/index.html" },
+                    AllowedCorsOrigins =     { "http://localhost:3000" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "https://quickstarts/api"
                     }
                 },
                 new Client
