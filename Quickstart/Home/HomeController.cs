@@ -23,6 +23,7 @@ namespace IdentityServer4.Quickstart.UI
             return View();
         }
 
+
         /// <summary>
         /// Shows the error page
         /// </summary>

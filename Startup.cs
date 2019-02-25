@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +37,26 @@ namespace QuickstartIdentityServer
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                     options.ClientId = "33f1f15d-93d5-4749-9b0e-24fc7c0bf56e";
                     options.ClientSecret = "wttGKYI05[vppzBAG913#?_";
+                }).AddOpenIdConnect("Extend", options =>
+                {
+                    options.Authority = "http://localhost:7000";
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    // Configure the Auth0 Client ID and Client Secret
+                    options.ClientId = "123";
+                    options.ClientSecret = "456";
+                    options.RequireHttpsMetadata = false;
+                    // Set response type to code
+                    options.ResponseType = "code";
+                    options.Scope.Clear();
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+                    options.CallbackPath = new PathString("/callback");
+                    options.GetClaimsFromUserInfoEndpoint = true;
+                    // Configure the Claims Issuer to be Auth0
+                    options.ClaimsIssuer = "Extend";
+
+                    // Saves tokens to the AuthenticationProperties
+                    options.SaveTokens = true;
                 });
             // configure identity server with in-memory stores, keys, clients and scopes
             services.AddIdentityServer()

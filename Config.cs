@@ -105,7 +105,9 @@ namespace QuickstartIdentityServer
                     AllowedScopes =
                     {
                         "https://quickstarts/api",
+                        IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OpenId,
+                        "nationality"
                     }
                 },
                 new Client
@@ -169,8 +171,11 @@ namespace QuickstartIdentityServer
 
                     Claims = new List<Claim>
                     {
+                        new Claim("ID","123"),
                         new Claim("name", "Bob"),
-                        new Claim("website", "https://bob.com")
+                        new Claim("website", "https://bob.com"),
+                        new Claim("综上所述","fuck"),
+                        new Claim("nationality","美国")
                     }
                 }
             };
