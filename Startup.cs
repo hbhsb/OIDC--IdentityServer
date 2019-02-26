@@ -39,7 +39,7 @@ namespace QuickstartIdentityServer
                     options.ClientSecret = "wttGKYI05[vppzBAG913#?_";
                 }).AddOpenIdConnect("Extend", options =>
                 {
-                    options.Authority = "http://localhost:7000";
+                    options.Authority = "http://192.168.0.158:10111";
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                     // Configure the Auth0 Client ID and Client Secret
                     options.ClientId = "123";

@@ -35,7 +35,8 @@ namespace QuickstartIdentityServer
                         "given_name",
                         "gender",
                         "nationality"
-                    })
+                    }),
+                new ApiResource("java/api","JavaApi")
             };
         }
 
@@ -79,13 +80,15 @@ namespace QuickstartIdentityServer
                     {
                         new Secret("jecyL0PrTIxjNf4GUbz0oa_ssRLiJBG8OXfIMzLDjGCEoTV48HHqvK2pasPodPyN".Sha256())
                     },
-
+                    FrontChannelLogoutUri = "http://192.168.0.174:3000/signout-remote",
+                    FrontChannelLogoutSessionRequired = false,
                     RedirectUris = { "http://192.168.0.174:3000/callback" },
                     PostLogoutRedirectUris = { "http://localhost:3000/" },
 
                     AllowedScopes =
                     {
                         "https://quickstarts/api",
+                        "java/api",
                         IdentityServerConstants.StandardScopes.OpenId,
                     }
                 },
@@ -99,12 +102,37 @@ namespace QuickstartIdentityServer
                         new Secret("BPptSgcAhYxUYIIPSbr5SDHG4-Gq8TrP2qsVc44j4YmNqmm-nuc2Ld3heyJQoMmB".Sha256())
                     },
 
-                    RedirectUris = { "http://localhost:3000/callback" },
+                    RedirectUris = { "http://192.168.0.158:8196/callback" },
+                    PostLogoutRedirectUris = { "http://localhost:3000/" },
+                    FrontChannelLogoutUri = "http://192.168.0.158:8196/account/logout",
+                    FrontChannelLogoutSessionRequired = false,
+                    AllowedScopes =
+                    {
+                        "https://quickstarts/api",
+                        "java/api",
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        "nationality"
+                    }
+                },
+                new Client
+                {
+                    ClientId = "ThirdWebAppId",
+                    ClientName = "ThirdWebApp",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    ClientSecrets =
+                    {
+                        new Secret("ThirdWebAppPsd".Sha256())
+                    },
+                    FrontChannelLogoutUri = "http://192.168.0.158:10112/account/logout",
+                    FrontChannelLogoutSessionRequired = false,
+                    RedirectUris = { "http://192.168.0.158:10112/callback" },
                     PostLogoutRedirectUris = { "http://localhost:3000/" },
 
                     AllowedScopes =
                     {
                         "https://quickstarts/api",
+                        "java/api",
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OpenId,
                         "nationality"
