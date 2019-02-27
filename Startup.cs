@@ -1,7 +1,11 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using IdentityServer.Data;
 using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
@@ -30,6 +34,11 @@ namespace QuickstartIdentityServer
             
             services.AddMvc();
 
+            services.AddAuthenticationCore(options =>
+            {
+                options.AddScheme<MyAuthenticationHandler>("myScheme", "demo scheme");
+            });
+
 
             services.AddAuthentication()
                 .AddMicrosoftAccount(MicrosoftAccountDefaults.AuthenticationScheme, options =>
@@ -37,13 +46,15 @@ namespace QuickstartIdentityServer
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                     options.ClientId = "33f1f15d-93d5-4749-9b0e-24fc7c0bf56e";
                     options.ClientSecret = "wttGKYI05[vppzBAG913#?_";
-                }).AddOpenIdConnect("Extend", options =>
+                })
+                .AddOpenIdConnect("Extend", "OA账号登录",options =>
                 {
-                    options.Authority = "http://192.168.0.158:10111";
+                    options.Authority = "http://localhost:7000";
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    options.SignOutScheme = IdentityServerConstants.SignoutScheme;
                     // Configure the Auth0 Client ID and Client Secret
-                    options.ClientId = "123";
-                    options.ClientSecret = "456";
+                    options.ClientId = "ZnwqE8j-H6kmHeQBM3NH2WbdikUjPrNV";
+                    options.ClientSecret = "jecyL0PrTIxjNf4GUbz0oa_ssRLiJBG8OXfIMzLDjGCEoTV48HHqvK2pasPodPyN";
                     options.RequireHttpsMetadata = false;
                     // Set response type to code
                     options.ResponseType = "code";
@@ -59,7 +70,11 @@ namespace QuickstartIdentityServer
                     options.SaveTokens = true;
                 });
             // configure identity server with in-memory stores, keys, clients and scopes
-            services.AddIdentityServer()
+            services.AddIdentityServer(options =>
+                {
+                    options.Authentication.CookieLifetime = TimeSpan.FromDays(1);
+                    options.Authentication.CookieSlidingExpiration = true;
+                })
                 .AddDeveloperSigningCredential()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())

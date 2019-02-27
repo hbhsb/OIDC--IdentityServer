@@ -84,13 +84,14 @@ namespace QuickstartIdentityServer
                     FrontChannelLogoutSessionRequired = false,
                     RedirectUris = { "http://192.168.0.174:3000/callback" },
                     PostLogoutRedirectUris = { "http://localhost:3000/" },
-
+                    AllowOfflineAccess = true,
                     AllowedScopes =
                     {
                         "https://quickstarts/api",
                         "java/api",
                         IdentityServerConstants.StandardScopes.OpenId,
-                    }
+                    },
+                    AccessTokenLifetime = 60,
                 },
                 new Client
                 {
@@ -115,29 +116,29 @@ namespace QuickstartIdentityServer
                         "nationality"
                     }
                 },
-                new Client
-                {
-                    ClientId = "ThirdWebAppId",
-                    ClientName = "ThirdWebApp",
-                    AllowedGrantTypes = GrantTypes.Code,
-                    ClientSecrets =
-                    {
-                        new Secret("ThirdWebAppPsd".Sha256())
-                    },
-                    FrontChannelLogoutUri = "http://192.168.0.158:10112/account/logout",
-                    FrontChannelLogoutSessionRequired = false,
-                    RedirectUris = { "http://192.168.0.158:10112/callback" },
-                    PostLogoutRedirectUris = { "http://localhost:3000/" },
+                //new Client
+                //{
+                //    ClientId = "ThirdWebAppId",
+                //    ClientName = "ThirdWebApp",
+                //    AllowedGrantTypes = GrantTypes.Code,
+                //    ClientSecrets =
+                //    {
+                //        new Secret("ThirdWebAppPsd".Sha256())
+                //    },
+                //    FrontChannelLogoutUri = "http://192.168.0.158:10112/account/logout",
+                //    FrontChannelLogoutSessionRequired = false,
+                //    RedirectUris = { "http://192.168.0.158:10112/callback" },
+                //    PostLogoutRedirectUris = { "http://localhost:3000/" },
 
-                    AllowedScopes =
-                    {
-                        "https://quickstarts/api",
-                        "java/api",
-                        IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        "nationality"
-                    }
-                },
+                //    AllowedScopes =
+                //    {
+                //        "https://quickstarts/api",
+                //        "java/api",
+                //        IdentityServerConstants.StandardScopes.Profile,
+                //        IdentityServerConstants.StandardScopes.OpenId,
+                //        "nationality"
+                //    }
+                //},
                 new Client
                 {
                     ClientId = "js",
