@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using IdentityServer.Data;
 using IdentityServer4;
+using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 using Microsoft.AspNetCore.Builder;
@@ -40,6 +41,8 @@ namespace QuickstartIdentityServer
             });
 
 
+            services.AddTransient<IExtensionGrantValidator, MyCrapGrantValidator>();
+
             services.AddAuthentication()
                 .AddMicrosoftAccount(MicrosoftAccountDefaults.AuthenticationScheme, options =>
                 {
@@ -49,7 +52,7 @@ namespace QuickstartIdentityServer
                 })
                 .AddOpenIdConnect("Extend", "OA账号登录",options =>
                 {
-                    options.Authority = "http://localhost:7000";
+                    options.Authority = "http://127.0.0.1:7000";
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                     options.SignOutScheme = IdentityServerConstants.SignoutScheme;
                     // Configure the Auth0 Client ID and Client Secret

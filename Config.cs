@@ -43,19 +43,26 @@ namespace QuickstartIdentityServer
         // clients want to access resources (aka scopes)
         public static IEnumerable<Client> GetClients()
         {
-            // client credentials client
             return new List<Client>
             {
+                //使用自定义认证方式的客户端
                 new Client
                 {
                     ClientId = "client",
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
-
+                    AllowedGrantTypes = new List<string>()
+                    {
+                        "my_crap_grant",
+                    },
+                    
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedScopes = { "api1" }
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OpenId,
+                    }
                 },
 
                 // resource owner password grant client
@@ -63,26 +70,27 @@ namespace QuickstartIdentityServer
                 {
                     ClientId = "ro.client",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
                     AllowedScopes = { "api1" }
                 },
-                // OpenID Connect implicit flow client (MVC)
+                // 风险平台，OpenID Connect implicit flow client (MVC)
                 new Client
                 {
                     ClientId = "ZnwqE8j-H6kmHeQBM3NH2WbdikUjPrNV",
-                    ClientName = "MVC Client",
+                    ClientName = "风险平台",
                     AllowedGrantTypes = GrantTypes.Code,
                     ClientSecrets =
                     {
                         new Secret("jecyL0PrTIxjNf4GUbz0oa_ssRLiJBG8OXfIMzLDjGCEoTV48HHqvK2pasPodPyN".Sha256())
                     },
-                    FrontChannelLogoutUri = "http://192.168.0.174:3000/signout-remote",
+                    //用于单点登出，当某一个应用发起远程登出请求后，identityServer4会调用这个地址完成此客户端的登出
                     FrontChannelLogoutSessionRequired = false,
-                    RedirectUris = { "http://192.168.0.174:3000/callback" },
+                    FrontChannelLogoutUri = "http://192.168.0.174:3000/signout-remote",
+                    //
+                    RedirectUris = { "http://192.168.0.174:3000/callback", "http://localhost:3000/callback"},
                     PostLogoutRedirectUris = { "http://localhost:3000/" },
                     AllowOfflineAccess = true,
                     AllowedScopes =
@@ -91,19 +99,21 @@ namespace QuickstartIdentityServer
                         "java/api",
                         IdentityServerConstants.StandardScopes.OpenId,
                     },
-                    AccessTokenLifetime = 60,
+                    //AccessToken过期时长设置为5分钟
+                    AccessTokenLifetime = 60*5,
                 },
+                // 合同平台，OpenID Connect implicit flow client (MVC)
                 new Client
                 {
                     ClientId = "SYGtG8b4HcWBICHxkw63173ohARZoaO8",
-                    ClientName = "MVC Client2",
+                    ClientName = "合同平台",
                     AllowedGrantTypes = GrantTypes.Code,
                     ClientSecrets =
                     {
                         new Secret("BPptSgcAhYxUYIIPSbr5SDHG4-Gq8TrP2qsVc44j4YmNqmm-nuc2Ld3heyJQoMmB".Sha256())
                     },
 
-                    RedirectUris = { "http://192.168.0.158:8196/callback" },
+                    RedirectUris = { "http://192.168.0.158:8196/callback" ,"http://localhost:3000/callback"},
                     PostLogoutRedirectUris = { "http://localhost:3000/" },
                     FrontChannelLogoutUri = "http://192.168.0.158:8196/account/logout",
                     FrontChannelLogoutSessionRequired = false,
@@ -203,7 +213,7 @@ namespace QuickstartIdentityServer
                         new Claim("ID","123"),
                         new Claim("name", "Bob"),
                         new Claim("website", "https://bob.com"),
-                        new Claim("综上所述","fuck"),
+                        new Claim("综上所述","zsss"),
                         new Claim("nationality","美国")
                     }
                 }
