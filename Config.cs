@@ -28,7 +28,8 @@ namespace QuickstartIdentityServer
         {
             return new List<ApiResource>
             {
-                new ApiResource("https://quickstarts/api", "My API",
+                new ApiResource("https://quickstarts/api",
+                    "My API",
                     new List<string>()
                     {
                         "role",
@@ -40,7 +41,6 @@ namespace QuickstartIdentityServer
             };
         }
 
-        // clients want to access resources (aka scopes)
         public static IEnumerable<Client> GetClients()
         {
             return new List<Client>
@@ -52,8 +52,9 @@ namespace QuickstartIdentityServer
                     AllowedGrantTypes = new List<string>()
                     {
                         "my_crap_grant",
+                        "CzarCustomUser"
                     },
-                    
+
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
@@ -124,7 +125,8 @@ namespace QuickstartIdentityServer
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OpenId,
                         "nationality"
-                    }
+                    },
+                    AlwaysIncludeUserClaimsInIdToken = true
                 },
                 //new Client
                 //{
@@ -200,7 +202,7 @@ namespace QuickstartIdentityServer
                     {
                         new Claim("name", "Alice"),
                         new Claim("website", "https://alice.com")
-                    }
+                    },
                 },
                 new TestUser
                 {
@@ -214,6 +216,20 @@ namespace QuickstartIdentityServer
                         new Claim("name", "Bob"),
                         new Claim("website", "https://bob.com"),
                         new Claim("综上所述","zsss"),
+                        new Claim("nationality","美国")
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "hbhsb",
+                    Username = "hbhsb",
+                    Password = "hbhsb",
+
+                    Claims = new List<Claim>
+                    {
+                        new Claim("iid","1"),
+                        new Claim("pwd", "hbhsb"),
+                        new Claim("website", "https://bob.com"),
                         new Claim("nationality","美国")
                     }
                 }

@@ -55,7 +55,7 @@ namespace QuickstartIdentityServer
                     options.Authority = "http://127.0.0.1:7000";
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                     options.SignOutScheme = IdentityServerConstants.SignoutScheme;
-                    // Configure the Auth0 Client ID and Client Secret
+                    // Configure the Client ID and Client Secret
                     options.ClientId = "ZnwqE8j-H6kmHeQBM3NH2WbdikUjPrNV";
                     options.ClientSecret = "jecyL0PrTIxjNf4GUbz0oa_ssRLiJBG8OXfIMzLDjGCEoTV48HHqvK2pasPodPyN";
                     options.RequireHttpsMetadata = false;
@@ -66,9 +66,8 @@ namespace QuickstartIdentityServer
                     options.Scope.Add("profile");
                     options.CallbackPath = new PathString("/callback");
                     options.GetClaimsFromUserInfoEndpoint = true;
-                    // Configure the Claims Issuer to be Auth0
+                    // Configure the Claims Issuer
                     options.ClaimsIssuer = "Extend";
-
                     // Saves tokens to the AuthenticationProperties
                     options.SaveTokens = true;
                 });
@@ -82,8 +81,9 @@ namespace QuickstartIdentityServer
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
-                .AddTestUsers(Config.GetUsers());
-            
+                .AddTestUsers(Config.GetUsers())
+                .AddExtensionGrantValidator<CzarCustomUserGrantValidator>();
+
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -92,7 +92,6 @@ namespace QuickstartIdentityServer
             {
                 app.UseDeveloperExceptionPage();
             }
-
 
             app.UseIdentityServer();
             
