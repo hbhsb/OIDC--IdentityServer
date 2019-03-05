@@ -34,7 +34,7 @@ namespace QuickstartIdentityServer
     public class Startup
     {
         private const string connString = @"
-            Data Source=.\SQLEXPRESS;Initial Catalog=CISDI_TEST20180829;User ID=sa;Password=dsfd;
+            Data Source=192.168.0.174\SQLEXPRESS;Initial Catalog=QDPort20181129;User ID=sa;Password=123456;
             Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
             ";
         
@@ -97,7 +97,7 @@ namespace QuickstartIdentityServer
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
-                .AddTestUsers(Config.GetUsers())
+                //.AddTestUsers(Config.GetUsers())
                 
                 //.AddConfigurationStore(options =>
                 //{
@@ -111,7 +111,8 @@ namespace QuickstartIdentityServer
                 //        b.UseSqlServer(connString,
                 //            sql => sql.MigrationsAssembly(migrationAssembly));
                 //})
-                .AddExtensionGrantValidator<CzarCustomUserGrantValidator>();
+                .AddExtensionGrantValidator<CzarCustomUserGrantValidator>()
+                .AddProfileService<UserProfileService>();
             services.AddDbContext<CISDI_TEST20180829Context>(
                 options => options.UseSqlServer(connString));
             services.AddTransient<UserStore>();

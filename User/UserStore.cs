@@ -54,7 +54,19 @@ namespace IdentityServer.User
         /// <returns></returns>
         public TestUser FindBySubjectId(string subjectId)
         {
-            return _users.FirstOrDefault(x => x.SubjectId == subjectId);
+            TestUser testUser = new TestUser();
+            Popedom popedom = dbContext.Popedom.Where(c => c.Userid == subjectId).FirstOrDefault();
+            if (popedom != null)
+            {
+                testUser.SubjectId = popedom.Userid;
+                testUser.Claims=new List<Claim>()
+                {
+                    new Claim("name", popedom.Username),
+                    new Claim("sysId",popedom.Userid),
+                    new Claim("nationality","中国")
+                };
+            }
+            return testUser;
         }
 
         /// <summary>
@@ -64,12 +76,20 @@ namespace IdentityServer.User
         /// <returns></returns>
         public TestUser FindByUsername(string username)
         {
-              //dbContext.Popedom.AsEnumerable().(c => c.LoginName == username);
-            if (dbContext.Popedom.Select(c => c.LoginName == username).Any())
+            //dbContext.Popedom.AsEnumerable().(c => c.LoginName == username);
+            TestUser testUser = new TestUser();
+            Popedom popedom = dbContext.Popedom.Where(c => c.Username == username).FirstOrDefault();
+            if (popedom != null)
             {
-                
-            } 
-            return _users.FirstOrDefault(x => x.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
+                testUser.SubjectId = popedom.Userid;
+                testUser.Claims = new List<Claim>()
+                {
+                    new Claim("name", popedom.Username),
+                    new Claim("sysId",popedom.Userid),
+                    new Claim("nationality","中国")
+                };
+            }
+            return testUser;
         }
 
         /// <summary>
