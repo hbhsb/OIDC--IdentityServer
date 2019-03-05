@@ -2,11 +2,20 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Reflection;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using IdentityServer.Data;
+using IdentityServer.Models;
+using IdentityServer.User;
 using IdentityServer4;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.Test;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
@@ -14,6 +23,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -22,7 +33,11 @@ namespace QuickstartIdentityServer
 {
     public class Startup
     {
-
+        private const string connString = @"
+            Data Source=.\SQLEXPRESS;Initial Catalog=CISDI_TEST20180829;User ID=sa;Password=dsfd;
+            Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
+            ";
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,7 +47,8 @@ namespace QuickstartIdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
             services.AddMvc();
 
             services.AddAuthenticationCore(options =>
@@ -82,8 +98,23 @@ namespace QuickstartIdentityServer
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
                 .AddTestUsers(Config.GetUsers())
+                
+                //.AddConfigurationStore(options =>
+                //{
+                //    options.ConfigureDbContext = b =>
+                //        b.UseSqlServer(connString,
+                //            sql => sql.MigrationsAssembly(migrationAssembly));
+                //})
+                //.AddOperationalStore(options =>
+                //{
+                //    options.ConfigureDbContext = b =>
+                //        b.UseSqlServer(connString,
+                //            sql => sql.MigrationsAssembly(migrationAssembly));
+                //})
                 .AddExtensionGrantValidator<CzarCustomUserGrantValidator>();
-
+            services.AddDbContext<CISDI_TEST20180829Context>(
+                options => options.UseSqlServer(connString));
+            services.AddTransient<UserStore>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -97,6 +128,58 @@ namespace QuickstartIdentityServer
             
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
+
+            //InitializeDatabase(app);
+            TestUserStore testUserStore = app.ApplicationServices.GetService<TestUserStore>();
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+
+                var dbService = serviceScope.ServiceProvider.GetRequiredService<CISDI_TEST20180829Context>();
+                //var dbService = app.ApplicationServices.GetService<CISDI_TEST20180829Context>();
+                foreach (Popedom popedom in dbService.Popedom.Take(50))
+                {
+                    
+                }
+            }
+
+            
+        }
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+
+                var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+                context.Database.Migrate();
+                if (!EnumerableExtensions.Any(context.Clients))
+                {
+                    foreach (var client in Config.GetClients())
+                    {
+                        context.Clients.Add(client.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+
+                if (!EnumerableExtensions.Any(context.IdentityResources))
+                {
+                    foreach (var resource in Config.GetIdentityResources())
+                    {
+                        context.IdentityResources.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+
+                if (!EnumerableExtensions.Any(context.ApiResources))
+                {
+                    foreach (var resource in Config.GetApiResources())
+                    {
+                        context.ApiResources.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+            }
         }
     }
 }

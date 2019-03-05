@@ -5,12 +5,16 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using System.Security.Claims;
+using IdentityModel;
 
 namespace QuickstartIdentityServer
 {
     public class Config
     {
+        
+        
         // scopes define the resources in your system
         public static IEnumerable<IdentityResource> GetIdentityResources()
         {
@@ -20,7 +24,8 @@ namespace QuickstartIdentityServer
                 new IdentityResources.Profile(),
                 new IdentityResources.Email(),
                 new IdentityResource("roles","角色", new List<string>{"role"}),
-                new IdentityResource("nationality","国籍", new List<string>(){"nationality"})
+                new IdentityResource("nationality","国籍", new List<string>(){"nationality"}),
+                new IdentityResource("sysId","用户编号", new List<string>(){"sysId", "nationality"})
             };
         }
 
@@ -98,6 +103,8 @@ namespace QuickstartIdentityServer
                     {
                         "https://quickstarts/api",
                         "java/api",
+                        "sysId",
+                        IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OpenId,
                     },
                     //AccessToken过期时长设置为5分钟
@@ -124,7 +131,8 @@ namespace QuickstartIdentityServer
                         "java/api",
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OpenId,
-                        "nationality"
+                        "nationality",
+                        "sysId"
                     },
                     AlwaysIncludeUserClaimsInIdToken = true
                 },
@@ -190,6 +198,7 @@ namespace QuickstartIdentityServer
 
         public static List<TestUser> GetUsers()
         {
+
             return new List<TestUser>
             {
                 new TestUser
@@ -201,7 +210,9 @@ namespace QuickstartIdentityServer
                     Claims = new List<Claim>
                     {
                         new Claim("name", "Alice"),
-                        new Claim("website", "https://alice.com")
+                        new Claim("website", "https://alice.com"),
+                        new Claim("sysId","2222"),
+                        new Claim("nationality","英国")
                     },
                 },
                 new TestUser
@@ -215,7 +226,7 @@ namespace QuickstartIdentityServer
                         new Claim("ID","123"),
                         new Claim("name", "Bob"),
                         new Claim("website", "https://bob.com"),
-                        new Claim("综上所述","zsss"),
+                        new Claim("sysId","1111"),
                         new Claim("nationality","美国")
                     }
                 },
