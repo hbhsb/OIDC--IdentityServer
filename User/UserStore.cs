@@ -17,9 +17,9 @@ namespace IdentityServer.User
         protected readonly CISDI_TEST20180829Context dbContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="IdentityServer4.Test.TestUserStore"/> class.
+        /// Initializes a new instance of the <see cref="IdentityServer4.Test.UserStore"/> class.
         /// </summary>
-        /// <param name="users">The users.</param>
+        /// <param name="_dbContext">The users.</param>
         public UserStore(CISDI_TEST20180829Context _dbContext)
         {
             dbContext = _dbContext;

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using System.Security.Claims;
 using IdentityModel;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace QuickstartIdentityServer
 {
@@ -42,7 +43,8 @@ namespace QuickstartIdentityServer
                         "gender",
                         "nationality"
                     }),
-                new ApiResource("java/api","JavaApi")
+                new ApiResource("java/api","JavaApi"),
+                new ApiResource("api1",".Net Core Api")
             };
         }
 
@@ -109,13 +111,14 @@ namespace QuickstartIdentityServer
                     },
                     //AccessToken过期时长设置为5分钟
                     AccessTokenLifetime = 60*5,
+                    AlwaysIncludeUserClaimsInIdToken = true
                 },
                 // 合同平台，OpenID Connect implicit flow client (MVC)
                 new Client
                 {
                     ClientId = "SYGtG8b4HcWBICHxkw63173ohARZoaO8",
                     ClientName = "合同平台",
-                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowedGrantTypes = new List<string>{GrantType.AuthorizationCode, OpenIdConnectGrantTypes. RefreshToken },
                     ClientSecrets =
                     {
                         new Secret("BPptSgcAhYxUYIIPSbr5SDHG4-Gq8TrP2qsVc44j4YmNqmm-nuc2Ld3heyJQoMmB".Sha256())
@@ -125,15 +128,18 @@ namespace QuickstartIdentityServer
                     PostLogoutRedirectUris = { "http://localhost:3000/" },
                     FrontChannelLogoutUri = "http://192.168.0.158:8196/account/logout",
                     FrontChannelLogoutSessionRequired = false,
+                    AllowOfflineAccess = true,
                     AllowedScopes =
                     {
                         "https://quickstarts/api",
                         "java/api",
+                        "api1",
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OpenId,
                         "nationality",
                         "sysId"
                     },
+                    AccessTokenLifetime = 60,
                     AlwaysIncludeUserClaimsInIdToken = true
                 },
                 //new Client
