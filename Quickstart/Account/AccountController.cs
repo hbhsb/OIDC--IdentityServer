@@ -45,7 +45,7 @@ namespace IdentityServer4.Quickstart.UI
             IEventService events,
             UserStore users = null)
         {
-            // if the TestUserStore is not in DI, then we'll just use the global users collection
+            // if the UserStore is not in DI, then we'll just use the global users collection
             // this is where you would plug in your own custom identity management library (e.g. ASP.NET Identity)
             _users = users ?? new UserStore(dbContext);
 
@@ -103,7 +103,7 @@ namespace IdentityServer4.Quickstart.UI
 
             if (ModelState.IsValid)
             {
-                // validate username/password against in-memory store
+                // validate username/password against database store
                 if (_users.ValidateCredentials(model.Username, model.Password))
                 {
                     var user = _users.FindByUsername(model.Username);
@@ -134,7 +134,6 @@ namespace IdentityServer4.Quickstart.UI
                     return Redirect("~/");
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials"));
 
                 ModelState.AddModelError("", AccountOptions.InvalidCredentialsErrorMessage);
             }
