@@ -111,6 +111,8 @@ namespace QuickstartIdentityServer
                     },
                     //AccessToken过期时长设置为5分钟
                     AccessTokenLifetime = 60*5,
+                    //登录成功后跳过用户授权
+                    RequireConsent = false,
                     AlwaysIncludeUserClaimsInIdToken = true
                 },
                 // 合同平台，OpenID Connect implicit flow client (MVC)
@@ -139,6 +141,7 @@ namespace QuickstartIdentityServer
                         "nationality",
                         "sysId"
                     },
+                    RequireConsent = false,
                     AccessTokenLifetime = 60,
                     AlwaysIncludeUserClaimsInIdToken = true
                 },
@@ -169,20 +172,23 @@ namespace QuickstartIdentityServer
                 {
                     ClientId = "js",
                     ClientName = "JavaScript Client",
-                    AllowedGrantTypes = GrantTypes.Code,
-                    RequirePkce = true,
-                    RequireClientSecret = false,
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
 
-                    RedirectUris =           { "http://localhost:3000/callback.html" },
+                    RedirectUris =           { "http://localhost:3000/callback.html", "http://localhost:3000/silent.html"},
                     PostLogoutRedirectUris = { "http://localhost:3000/index.html" },
                     AllowedCorsOrigins =     { "http://localhost:3000" },
-
+                    AccessTokenLifetime = 90,
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "https://quickstarts/api"
-                    }
+                        "https://quickstarts/api",
+                        "api1",
+                        "sysId",
+                    },
+                    RequireConsent = false,
+                    AllowOfflineAccess = true,
                 },
                 new Client
                 {
