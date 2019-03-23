@@ -34,15 +34,22 @@ namespace QuickstartIdentityServer
     public class Startup
     {
         private const string connString = @"
-            Data Source=192.168.0.174\SQLEXPRESS;Initial Catalog=QDPort20181129;User ID=sa;Password=123456;
-            Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
+            
             ";
         
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
         {
             Configuration = configuration;
+            HostingEnvironment = hostingEnvironment;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(hostingEnvironment.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{hostingEnvironment.EnvironmentName}.json", optional: true)//增加环境配置文件，新建项目默认有
+                .AddEnvironmentVariables();
+            Configuration = builder.Build();
         }
 
+        public IHostingEnvironment HostingEnvironment { get; }
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
@@ -114,7 +121,7 @@ namespace QuickstartIdentityServer
                 .AddExtensionGrantValidator<CzarCustomUserGrantValidator>()
                 .AddProfileService<UserProfileService>();
             services.AddDbContext<CISDI_TEST20180829Context>(
-                options => options.UseSqlServer(connString));
+                options => options.UseSqlServer(Configuration["ConnectionStrings"]));
             services.AddTransient<UserStore>();
         }
 

@@ -1,18 +1,21 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 namespace IdentityServer.Models
 {
     public partial class CISDI_TEST20180829Context : DbContext
     {
+        public IConfiguration Configuration { get; set; }
         public CISDI_TEST20180829Context()
         {
         }
 
-        public CISDI_TEST20180829Context(DbContextOptions<CISDI_TEST20180829Context> options)
+        public CISDI_TEST20180829Context(DbContextOptions<CISDI_TEST20180829Context> options, IConfiguration configuration)
             : base(options)
         {
+            Configuration = configuration;
         }
 
         public virtual DbSet<Popedom> Popedom { get; set; }
@@ -22,7 +25,10 @@ namespace IdentityServer.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=.\\SQLEXPRESS;Initial Catalog=CISDI_TEST20180829;User ID=sa;Password=dsfd;");
+                optionsBuilder.UseSqlServer(
+                    Configuration["ConnectionStrings"]
+                    //"Data Source=.\\SQLEXPRESS;Initial Catalog=CISDI_TEST20180829;User ID=sa;Password=dsfd;"
+                    );
             }
         }
 

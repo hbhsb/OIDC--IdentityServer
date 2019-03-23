@@ -78,7 +78,8 @@ namespace IdentityServer.User
         {
             //dbContext.Popedom.AsEnumerable().(c => c.LoginName == username);
             TestUser testUser = new TestUser();
-            Popedom popedom = dbContext.Popedom.Where(c => c.Username == username).FirstOrDefault();
+            var queryable = dbContext.Popedom.Select(c => c.LoginName == username);
+            Popedom popedom = dbContext.Popedom.FirstOrDefault(c => c.Username == username);
             if (popedom != null)
             {
                 testUser.SubjectId = popedom.Userid;
