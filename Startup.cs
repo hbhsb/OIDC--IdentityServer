@@ -100,7 +100,9 @@ namespace QuickstartIdentityServer
                     options.Authentication.CookieLifetime = TimeSpan.FromDays(1);
                     options.Authentication.CookieSlidingExpiration = true;
                 })
-                .AddDeveloperSigningCredential()
+                //.AddDeveloperSigningCredential()
+                .AddSigningCredential(new X509Certificate2("",
+                         Configuration["Certificates:Password"]))
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
